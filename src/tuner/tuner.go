@@ -9,20 +9,6 @@ import (
 	"time"
 )
 
-type Note struct {
-	pitch  float64 // frequency in Hz
-	octave uint8
-	ltr    string
-}
-
-var semitoneRatio = math.Pow(2, 1.0/12.0)
-
-var lowC = Note{
-	pitch:  16.35,
-	octave: 0,
-	ltr:    "C",
-}
-
 func getPitch(samples []float32) float64 {
 	data := make([]complex128, len(samples))
 
@@ -98,17 +84,7 @@ func getFullOctave(starter *Note) []*Note {
 	return noteSet
 }
 
-var octaveLowerBounds = getNoteSet(lowC)
-var octaveSemitones []Note // 9 * 13 tones
-
 func matchToNote(pitchIn float64) (string, int, int) {
-	for i := 0; i < 9; i++ {
-		octave := getFullOctave(&octaveLowerBounds[i])
-		for _, note := range octave {
-			octaveSemitones = append(octaveSemitones, *note)
-		}
-	}
-
 	minI := 0
 	maxI := len(octaveSemitones) - 1
 
@@ -138,9 +114,11 @@ func matchToNote(pitchIn float64) (string, int, int) {
 	return note, octave, cents
 }
 
-func Main() {
+func StartTuner() {
 
 	println("Initializing tuner... ^C to stop")
+
+	initSemitones()
 
 	err := portaudio.Initialize()
 	defer func() {

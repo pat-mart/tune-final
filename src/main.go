@@ -9,22 +9,30 @@ import (
 )
 
 func main() {
-	argCount := len(os.Args)
 
-	if argCount < 2 {
-		fmt.Println("Usage: tuneminal [-tune] [-metronome [-bpm]]")
+	if len(os.Args) < 1 {
+		panic("Usage: tuneminal [-tune] [-tune [-tone [-semitone]] [-metronome [-bpm]]")
 	}
 
 	if os.Args[1] == "tune" {
-		tuner.Main()
+		handleTuner()
+
 	} else if os.Args[1] == "metronome" {
 		bpm, err := strconv.Atoi(os.Args[2])
 		if err != nil {
-			fmt.Println("Usage: [-metronome [-bpm]] (bpm must be integer)")
+			panic("Usage: [-metronome [-bpm]] (bpm must be integer)")
 		}
-		println(bpm)
+
 		metro.Start(bpm)
 	} else {
 		fmt.Println("Usage: tuneminal [-tune] [-metronome [-bpm]]")
+	}
+}
+
+func handleTuner() {
+	if len(os.Args) > 3 && os.Args[2] == "tonegen" {
+		tuner.StartTonegen(os.Args[3])
+	} else {
+		tuner.StartTuner()
 	}
 }

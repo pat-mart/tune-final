@@ -20,6 +20,7 @@ func generateClick(freq float64) []float32 {
 }
 
 func playClick(tone []float32) {
+
 	stream, err := portaudio.OpenDefaultStream(0, 1, 44100, len(tone)/4, tone)
 	if err != nil {
 		panic(err)
@@ -63,8 +64,4 @@ func Start(bpm int) {
 			beatCount++
 		}
 	}
-}
-
-func main() {
-	Start(60)
 }
